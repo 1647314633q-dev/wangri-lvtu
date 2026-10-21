@@ -1,0 +1,16 @@
+# Cloudflare Worker 設定：一個部署就包埋網站同 AI
+name = "wangri-lvtu"
+main = "worker/index.js"
+compatibility_date = "2025-09-01"
+
+[assets]
+directory = "./dist"
+binding = "ASSETS"
+
+# Gemini API 唔接受由香港 IP 發出嘅請求。
+# 呢個設定叫 Cloudflare 喺美國嘅數據中心執行 /api/ai，等請求由支援地區發出。
+[placement]
+region = "gcp:us-central1"
+
+[vars]
+GEMINI_MODEL = "gemini-3.6-flash"

@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 600"><defs><linearGradient id="bg" x2="0" y2="1"><stop stop-color="#efe3c6"/><stop offset="1" stop-color="#d8c39a"/></linearGradient><pattern id="gr" width="6" height="6" patternUnits="userSpaceOnUse"><circle cx="1" cy="1" r=".7" fill="#5a4026" opacity=".12"/><circle cx="4" cy="4" r=".6" fill="#fff8e6" opacity=".3"/></pattern></defs><rect width="800" height="600" fill="url(#bg)"/><g transform="rotate(-6 400 330)"><rect x="170" y="140" width="460" height="340" fill="#f7efdc" stroke="#3d2b1f" stroke-width="5"/><path d="M400 140 V480" stroke="#3d2b1f" stroke-width="3"/><g stroke="#9c8a66" stroke-width="2"><path d="M200 170 V450"/>
+<path d="M225 170 V450"/>
+<path d="M250 170 V450"/>
+<path d="M275 170 V450"/>
+<path d="M300 170 V450"/>
+<path d="M325 170 V450"/>
+<path d="M350 170 V450"/>
+<path d="M375 170 V450"/></g><g font-family="Noto Serif TC,serif" font-size="22" fill="#3d2b1f"><text x="560" y="200" writing-mode="tb">默　書</text><text x="520" y="200" writing-mode="tb">人之初</text><text x="480" y="200" writing-mode="tb">性本善</text></g><circle cx="300" cy="300" r="60" fill="none" stroke="#9c3b2a" stroke-width="6"/><text x="300" y="320" text-anchor="middle" font-family="Noto Serif TC,serif" font-size="56" fill="#9c3b2a">甲</text></g><path d="M600 470 L700 360" stroke="#6b5236" stroke-width="14" stroke-linecap="round"/><path d="M700 360 L712 344" stroke="#3d2b1f" stroke-width="8"/><rect width="800" height="600" fill="url(#gr)"/></svg>

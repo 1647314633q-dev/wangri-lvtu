@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 600"><defs><linearGradient id="bg" x2="0" y2="1"><stop stop-color="#efe3c6"/><stop offset="1" stop-color="#d8c39a"/></linearGradient><pattern id="gr" width="6" height="6" patternUnits="userSpaceOnUse"><circle cx="1" cy="1" r=".7" fill="#5a4026" opacity=".12"/><circle cx="4" cy="4" r=".6" fill="#fff8e6" opacity=".3"/></pattern></defs><rect width="800" height="600" fill="url(#bg)"/><g transform="rotate(-5 400 320)"><rect x="210" y="150" width="300" height="380" fill="#c9b48a" stroke="#3d2b1f" stroke-width="5"/><rect x="240" y="190" width="240" height="70" fill="#f7efdc" stroke="#3d2b1f" stroke-width="3"/><text x="360" y="236" text-anchor="middle" font-family="Noto Serif TC,serif" font-size="34" fill="#9c3b2a">練 習 簿</text><g stroke="#3d2b1f" stroke-width="2"><path d="M250 300 h220 M250 340 h220 M250 380 h220"/></g><text x="260" y="296" font-family="Noto Serif TC,serif" font-size="22" fill="#3d2b1f">班別　　姓名</text></g><g transform="rotate(7 520 330)"><rect x="380" y="170" width="290" height="370" fill="#f7efdc" stroke="#3d2b1f" stroke-width="5"/><g stroke="#b9a37c" stroke-width="2"><path d="M400 210 h250"/>
+<path d="M400 246 h250"/>
+<path d="M400 282 h250"/>
+<path d="M400 318 h250"/>
+<path d="M400 354 h250"/>
+<path d="M400 390 h250"/>
+<path d="M400 426 h250"/>
+<path d="M400 462 h250"/>
+<path d="M400 498 h250"/></g><text x="410" y="240" font-family="Noto Serif TC,serif" font-size="24" fill="#3d2b1f">一二三四五</text></g><rect width="800" height="600" fill="url(#gr)"/></svg>

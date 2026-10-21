@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 560">
+  <defs>
+    <linearGradient id="sky" x2="0" y2="1"><stop stop-color="#efe3c6"/><stop offset="1" stop-color="#d8c39a"/></linearGradient>
+    <pattern id="grain" width="6" height="6" patternUnits="userSpaceOnUse"><circle cx="1" cy="1" r=".7" fill="#5a4026" opacity=".12"/><circle cx="4" cy="4" r=".6" fill="#fff8e6" opacity=".3"/></pattern>
+  </defs>
+  <rect width="800" height="560" fill="url(#sky)"/>
+  <path d="M0 470 Q120 420 240 450 T480 440 T800 430 V560 H0Z" fill="#a98e66"/>
+  <g fill="#7d6547"><rect x="40" y="380" width="70" height="90"/><rect x="120" y="350" width="60" height="120"/><rect x="600" y="360" width="80" height="110"/><rect x="690" y="390" width="70" height="80"/></g>
+  <rect x="300" y="430" width="200" height="12" fill="#6b5236"/>
+  <g transform="translate(360 300)"><circle cx="0" cy="0" r="16" fill="#3d2b1f"/><path d="M-12 14 L-18 110 M12 14 L18 110 M0 20 L0 70 M0 34 L70 -60" stroke="#3d2b1f" stroke-width="12" stroke-linecap="round"/></g>
+  <path d="M430 240 Q520 160 560 120" stroke="#3d2b1f" stroke-width="2" fill="none"/>
+  <g transform="translate(560 120) rotate(-12)">
+    <path d="M0 -90 L70 0 L0 110 L-70 0 Z" fill="#e9d7a8" stroke="#3d2b1f" stroke-width="5"/>
+    <path d="M0 -90 L70 0 L0 0 Z" fill="#9c3b2a" opacity=".8"/>
+    <path d="M0 -90 V110 M-70 0 H70" stroke="#3d2b1f" stroke-width="3"/>
+    <path d="M0 110 q-20 30 0 55 t0 55 t0 50" stroke="#3d2b1f" stroke-width="3" fill="none"/>
+    <path d="M-14 140 h28 M-14 190 h28 M-14 240 h28" stroke="#b68a45" stroke-width="10"/>
+  </g>
+  <text x="40" y="60" font-family="Noto Serif TC,serif" font-size="30" fill="#3d2b1f">示意插畫 · 可換成你的照片</text>
+  <rect width="800" height="560" fill="url(#grain)"/>
+</svg>

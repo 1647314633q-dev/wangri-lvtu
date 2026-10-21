@@ -1,0 +1,12 @@
+node_modules/
+dist/
+dist-single/
+.wrangler/
+.dev.vars
+.env
+.env.*
+*.log
+.DS_Store
+# 未取得公開授權嘅相片只留喺本機，唔好推上 GitHub
+src/assets/images/**/*.jpg
+src/assets/images/**/*.jpeg
