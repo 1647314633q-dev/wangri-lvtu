@@ -21,8 +21,8 @@ export function ReadAloud({ text }) {
 }
 
 const SOURCE = {
-  claude: '由 AI（Claude）根據你分享嘅內容整理，冇加入你冇講過嘅事。',
-  server: '由 AI（Gemini）根據你分享嘅內容整理，冇加入你冇講過嘅事。',
+  claude: '由 AI（Claude）根據你分享嘅內容整理。請核對內容，確認係你嘅真實經歷。',
+  server: '由 AI（Gemini）根據你分享嘅內容整理。請核對內容，確認係你嘅真實經歷。',
   local: '未連接 AI：呢度先將你講過嘅說話按次序排好。你可以自己修改。',
 }
 

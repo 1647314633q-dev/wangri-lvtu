@@ -2,15 +2,22 @@
 name = "wangri-lvtu-hk"
 main = "worker/index.js"
 compatibility_date = "2025-09-01"
+workers_dev = true
+preview_urls = false
 
 [assets]
 directory = "./dist"
 binding = "ASSETS"
-
-# Gemini API 唔接受由香港 IP 發出嘅請求。
-# 呢個設定叫 Cloudflare 喺美國嘅數據中心執行 /api/ai，等請求由支援地區發出。
-[placement]
-region = "gcp:us-central1"
+run_worker_first = ["/api/*", "/health"]
 
 [vars]
 GEMINI_MODEL = "gemini-3.6-flash"
+# AI 開關：要用 Gemini 整理故事，先用 `npx wrangler secret put GEMINI_API_KEY` 設定金鑰，再將下面改做 "true"。
+# 未開時遊戲照常運作，故事會改為將長者講過嘅說話按次序排好。
+# 注意：Gemini API 唔接受由香港 IP 發出嘅請求；如果開咗之後喺香港用唔到，可以加返：
+#   [placement]
+#   region = "gcp:us-central1"
+AI_ENABLED = "false"
+
+[observability]
+enabled = false

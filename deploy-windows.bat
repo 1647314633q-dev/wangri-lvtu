@@ -35,20 +35,9 @@ if errorlevel 1 ( echo 打包失敗。 & pause & exit /b 1 )
 echo.
 echo [4/4] 部署……（第一次可能會問你揀 workers.dev 子網域名稱，輸入一個英文名就得）
 call npx wrangler deploy
-if errorlevel 1 (
-  echo 用美國地區設定部署唔到，改用基本設定再試一次……
-  call npx wrangler deploy --config wrangler.basic.toml
-  if errorlevel 1 ( echo 部署失敗，請影低上面嘅訊息。 & pause & exit /b 1 )
-)
+if errorlevel 1 ( echo 部署失敗，請影低上面嘅訊息。 & pause & exit /b 1 )
 
 echo.
-set /p KEY=要唔要而家設定 Gemini AI 金鑰？（Y = 要，直接按 Enter = 遲啲先）:
-if /i "%KEY%"=="Y" (
-  echo 請貼上你嘅 Gemini API key，然後按 Enter（畫面唔會顯示，係正常嘅）：
-  call npx wrangler secret put GEMINI_API_KEY
-)
-
-echo.
-echo 完成！上面 "https://wangri-lvtu-hk.xxxx.workers.dev" 就係網址，任何人（包括香港）都可以直接打開。
-echo 冇設定 Gemini 金鑰都可以玩，只係故事會改為將長者講過嘅說話按次序排好。
+echo 完成！上面 "https://wangri-lvtu.xxxx.workers.dev" 就係網址，任何人（包括香港）都可以直接打開。
+echo AI 預設關閉：故事會將長者講過嘅說話按次序排好。想開 AI 請睇 wrangler.toml 入面 AI_ENABLED 嘅說明。
 pause

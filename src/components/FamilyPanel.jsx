@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
-import { FAMILY_CARDS, familyById } from '../data/childhood1940.js'
+import { FAMILY_CARDS, familyById } from '../data/family.js'
 import { familyFollowUp } from '../lib/ai.js'
 import MemoryEditor from './MemoryEditor.jsx'
 

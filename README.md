@@ -18,7 +18,8 @@
 2. **第一章 · 童年時光**：左邊圖片配右邊同名文字（波子、木飯桌、晾衫竹、鐵水桶、碗筷、寮屋）。配對成功彈出回憶卡，可以打字或者用廣東話講。
    右邊「我的家庭」可以隨時打開，講爸爸、媽媽、兄弟姊妹等等，唔講都得。
 3. **第二章 · 求學歲月**：先答「你細個有冇返過學呀？」，按答案去學校類型相簿、可選填年份，或者生活與學習技能配對。
-4. AI 只根據長者真正講過嘅內容，整理成「我的童年時光」「我的求學歲月」，可以修改、用廣東話讀出、保存到「我的人生自傳」。
+4. 「我的人生自傳」可以按「下載自傳文字檔」留底（回憶只存喺呢個瀏覽器）。
+5. AI 只根據長者真正講過嘅內容，整理成「我的童年時光」「我的求學歲月」，可以修改、用廣東話讀出、保存到「我的人生自傳」。
 
 回憶紀錄只存喺**每部裝置自己嘅瀏覽器**，唔會上傳；開啟 AI 時，長者寫嘅內容會經 Cloudflare 送去 Google Gemini 整理。
 
@@ -33,7 +34,7 @@
 **推薦：連 GitHub 自動部署** —— Cloudflare → Workers & Pages → Create → Import a repository → 揀呢個 repo：
 - Build command：`npm run build:cloudflare`
 - Deploy command：`npx wrangler deploy`
-- （可選）Settings → Variables and Secrets → 加 Secret `GEMINI_API_KEY`
+- AI 預設關閉（`AI_ENABLED = "false"`），遊戲照常玩得。要開：加 Secret `GEMINI_API_KEY`，再將 `wrangler.toml` 嘅 `AI_ENABLED` 改做 `"true"`
 
 之後每次推上 `main`，網站就會自動更新。其他方法（Windows 雙擊 `deploy-windows.bat`、手動指令）見 [`DEPLOY.md`](DEPLOY.md)。
 
@@ -273,7 +274,7 @@ wrangler.toml               Cloudflare 部署設定
 呢個方法冇 AI：遊戲會自動將長者講過嘅說話按次序排好，其他功能全部正常。
 
 ### 最簡單：Windows 雙擊 `deploy-windows.bat`
-會自動安裝、打開瀏覽器俾你自己登入 Cloudflare、（可選）輸入 Gemini key、部署，最後顯示 `https://wangri-lvtu-hk.<你嘅子網域>.workers.dev`。
+會自動安裝、打開瀏覽器俾你自己登入 Cloudflare、部署，最後顯示 `https://wangri-lvtu-hk.<你嘅子網域>.workers.dev`。
 workers.dev 係免費網域，香港可以直接打開，唔使登入任何嘢。
 
 ### 方法二：連 Gemini AI 一齊開（要用終端機，一次過搞掂）
@@ -284,13 +285,14 @@ workers.dev 係免費網域，香港可以直接打開，唔使登入任何嘢�
    npm install
    npx wrangler login                    # 第一次會開瀏覽器登入 Cloudflare
    npx wrangler secret put GEMINI_API_KEY   # 貼上你條 key（唔會顯示出嚟）
+   # 再將 wrangler.toml 嘅 AI_ENABLED 改做 "true"
    npm run deploy                        # 打包網站 + 部署 Worker
    ```
 3. 網址：`https://wangri-lvtu-hk.<你嘅帳戶子網域>.workers.dev`（終端機會顯示），之後可以喺 Cloudflare 綁定自己嘅網域。
 
-**點解要 Worker 而唔係 Pages Function？** Gemini API 會拒絕由香港 IP 發出嘅請求。Cloudflare 預設會喺最近用家嘅數據中心（香港）執行程式，所以 `wrangler.toml` 加咗
-`[placement] region = "gcp:us-central1"`，叫 Cloudflare 喺美國執行 `/api/ai`，網頁本身仍然由香港就近提供。
-部署後請喺香港用一次「整理我的故事」測試；如果仍然顯示「未連接 AI」，可以喺 Cloudflare → Worker → **Logs** 睇錯誤（例如 `User location is not supported`）。
+**香港用 AI 要留意**：Gemini API 會拒絕由香港 IP 發出嘅請求。如果開咗 AI 之後喺香港用唔到（`/health` 正常但故事變成原話排列），可以喺 `wrangler.toml` 加 `[placement] region = "gcp:us-central1"`，叫 Cloudflare 喺美國執行 `/api/ai`。
+
+**測試**：`npm test`（Worker API 驗證、冇 AI 時嘅原話整理、自傳匯出）。
 
 ### 要留意
 - **語音輸入**喺公開網站用 Chrome／Edge 就得（要允許咪高峰）；**廣東話朗讀**視乎裝置有冇裝香港中文語音。

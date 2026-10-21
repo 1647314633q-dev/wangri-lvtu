@@ -31,6 +31,7 @@ export function Cover({ onOpen, hasSave, onContinue }) {
       )}
       {hasSave && <button type="button" className="btn" onClick={onContinue}>繼續上次嘅旅程</button>}
       <p className="note center">冇時間限制，唔會扣分。慢慢玩，慢慢諗。</p>
+      <p className="note center">回憶只保存在呢個瀏覽器，記得下載自傳留底。</p>
     </section>
   )
 }

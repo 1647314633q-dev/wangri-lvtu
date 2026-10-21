@@ -1,8 +1,9 @@
 import { useState } from 'react'
 import { CHAPTERS } from '../data/chapters.js'
-import { FAMILY_CARDS } from '../data/childhood1940.js'
+import { FAMILY_CARDS } from '../data/family.js'
 import MemoryEditor from './MemoryEditor.jsx'
 import { ReadAloud } from './StoryPage.jsx'
+import { downloadMemoir } from '../lib/export.js'
 
 function TwoTap({ label, armed, onConfirm, className = 'btn ghost' }) {
   const [a, setA] = useState(false)
@@ -27,6 +28,7 @@ export default function Album({ pages, initialTab = 'childhood', onReset }) {
       <header className="album-head">
         <p className="kicker">往日旅途</p>
         <h1 className="h1">我的人生自傳</h1>
+        <button type="button" className="btn" onClick={() => downloadMemoir(pages)}>下載自傳文字檔</button>
       </header>
       <nav className="chapter-tabs" aria-label="章節">
         {visible.map(c => (

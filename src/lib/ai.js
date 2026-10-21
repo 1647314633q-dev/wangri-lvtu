@@ -4,10 +4,19 @@
 // 2. 有設定 VITE_AI_ENDPOINT（Cloudflare 版本係 /api/ai）→ 經自己嘅伺服器呼叫 Google Gemini
 // 3. 兩樣都用唔到 → 唔用 AI，直接將長者講過嘅說話按次序排好（唔會加任何虛構內容）
 
-const ENDPOINT = import.meta.env.VITE_AI_ENDPOINT || ''
+const ENDPOINT = import.meta.env?.VITE_AI_ENDPOINT || ''
+// 伺服器有冇開 AI（/api/status 回應 ai: 'gemini' 先算）；只問一次
+let serverStatus
+async function serverReady() {
+  if (!ENDPOINT) return false
+  if (!serverStatus) serverStatus = fetch('/api/status', { signal: AbortSignal.timeout(5000) })
+    .then(r => r.ok ? r.json() : null).then(s => s?.ai === 'gemini').catch(() => false)
+  return serverStatus
+}
 async function callServer(prompt, { json = false, signal } = {}) {
-  if (!ENDPOINT) return null
-  const res = await fetch(ENDPOINT, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ prompt, json }), signal })
+  if (!await serverReady()) throw new Error('AI 未啟用')
+  const timeout = AbortSignal.timeout(25000)
+  const res = await fetch(ENDPOINT, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ prompt, json }), signal: signal ? AbortSignal.any([signal, timeout]) : timeout })
   if (!res.ok) throw new Error('AI 伺服器出錯（' + res.status + '）')
   const data = await res.json()
   const text = String(data.text || '').trim()
@@ -34,7 +43,7 @@ function getSampler() {
 
 export async function aiAvailable() {
   if (await getSampler()) return 'claude'
-  if (ENDPOINT) return 'server'
+  if (await serverReady()) return 'server'
   return null
 }
 
