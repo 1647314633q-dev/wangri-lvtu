@@ -49,6 +49,6 @@ if /i "%KEY%"=="Y" (
 )
 
 echo.
-echo 完成！上面 "https://wangri-lvtu.xxxx.workers.dev" 就係網址，任何人（包括香港）都可以直接打開。
+echo 完成！上面 "https://wangri-lvtu-hk.xxxx.workers.dev" 就係網址，任何人（包括香港）都可以直接打開。
 echo 冇設定 Gemini 金鑰都可以玩，只係故事會改為將長者講過嘅說話按次序排好。
 pause

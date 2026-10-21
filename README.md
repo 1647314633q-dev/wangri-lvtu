@@ -3,8 +3,8 @@
 透過懷舊物件配對、回憶分享同 AI 整理，幫香港長者一步步記錄自己嘅人生故事。
 已完成 **第一章「童年時光」**（連「我的家庭」支線）同 **第二章「求學歲月」**（A／B／C 三條路線），以 **1940 年代出世** 嘅香港長者為例。
 
-**[▶ 開啟遊戲](https://wangri-lvtu.visionlink-workspace.workers.dev/)** · 免費、香港可以直接開、唔使登入 · 電腦、平板、手機都用得
-（網站由 Cloudflare Workers 提供；如果連結未開到，即係仲未部署，見下面「部署」）
+**[▶ 開啟遊戲](https://wangri-lvtu-hk.visionlink-workspace.workers.dev/)** · 免費、香港可以直接開、唔使登入 · 電腦、平板、手機都用得
+（網站由 Cloudflare Workers 提供，網址：https://wangri-lvtu-hk.visionlink-workspace.workers.dev/ ）
 
 | 封面 | 第一章 · 配對 + 我的家庭 |
 |---|---|
@@ -273,7 +273,7 @@ wrangler.toml               Cloudflare 部署設定
 呢個方法冇 AI：遊戲會自動將長者講過嘅說話按次序排好，其他功能全部正常。
 
 ### 最簡單：Windows 雙擊 `deploy-windows.bat`
-會自動安裝、打開瀏覽器俾你自己登入 Cloudflare、（可選）輸入 Gemini key、部署，最後顯示 `https://wangri-lvtu.<你嘅子網域>.workers.dev`。
+會自動安裝、打開瀏覽器俾你自己登入 Cloudflare、（可選）輸入 Gemini key、部署，最後顯示 `https://wangri-lvtu-hk.<你嘅子網域>.workers.dev`。
 workers.dev 係免費網域，香港可以直接打開，唔使登入任何嘢。
 
 ### 方法二：連 Gemini AI 一齊開（要用終端機，一次過搞掂）
@@ -286,7 +286,7 @@ workers.dev 係免費網域，香港可以直接打開，唔使登入任何嘢�
    npx wrangler secret put GEMINI_API_KEY   # 貼上你條 key（唔會顯示出嚟）
    npm run deploy                        # 打包網站 + 部署 Worker
    ```
-3. 網址：`https://wangri-lvtu.<你嘅帳戶子網域>.workers.dev`（終端機會顯示），之後可以喺 Cloudflare 綁定自己嘅網域。
+3. 網址：`https://wangri-lvtu-hk.<你嘅帳戶子網域>.workers.dev`（終端機會顯示），之後可以喺 Cloudflare 綁定自己嘅網域。
 
 **點解要 Worker 而唔係 Pages Function？** Gemini API 會拒絕由香港 IP 發出嘅請求。Cloudflare 預設會喺最近用家嘅數據中心（香港）執行程式，所以 `wrangler.toml` 加咗
 `[placement] region = "gcp:us-central1"`，叫 Cloudflare 喺美國執行 `/api/ai`，網頁本身仍然由香港就近提供。
