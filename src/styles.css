@@ -362,3 +362,22 @@ details.raw p { font-size: 18px; padding-bottom: 8px; }
   .app.family-open .stage { max-width: min(1040px, calc(100vw - 440px)); margin-left: max(0px, calc((100vw - 400px - 1040px) / 2)); }
 }
 @media (prefers-reduced-motion: reduce) { .family-panel { animation: none; } }
+
+/* ---------- 第三章：經歷選擇（沿用相簿樣式） ---------- */
+.exp-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; }
+@media (max-width: 720px) { .exp-grid { grid-template-columns: 1fr; } }
+.exp-card { display: flex; flex-direction: column; gap: 6px; background: #fbf5e6; border: 3px solid transparent; border-radius: 8px; padding: 10px; box-shadow: 0 6px 14px rgba(60,35,15,.15); }
+.exp-card.on { border-color: var(--stamp); box-shadow: 0 0 0 4px rgba(156,59,42,.2), 0 8px 18px rgba(60,35,15,.2); }
+.exp-card.off { opacity: .7; background: var(--paper2); }
+.exp-main { display: flex; align-items: center; gap: 14px; background: none; border: 0; cursor: pointer; text-align: left; color: var(--ink); font: inherit; min-height: 76px; padding: 4px; }
+.exp-text { display: flex; flex-direction: column; gap: 2px; flex: 1; min-width: 0; }
+.exp-text b { font: 900 23px var(--serif); letter-spacing: .05em; }
+.exp-text small { font-size: 16px; color: var(--ink2); }
+.exp-tick { font: 700 17px var(--sans); color: #fff8ea; background: var(--stamp); border-radius: 999px; padding: 2px 12px; }
+.exp-tick:empty { display: none; }
+.exp-card.off .exp-tick { background: var(--ink2); }
+.exp-no { align-self: flex-end; min-height: 48px; font-size: 17px; }
+.exp-where { display: flex; flex-direction: column; gap: 10px; align-items: center; text-align: center; }
+.exp-where input { display: block; width: min(420px, 100%); margin-top: 6px; font-size: 22px; padding: 10px 12px; border: 2px solid var(--line); border-radius: 6px; background: #fffaf0; }
+.memfollow { margin: 0; }
+.year-input { display: block; width: 8em; font-size: 26px; padding: 8px 10px; margin-top: 6px; border: 2px solid var(--line); border-radius: 6px; background: #fffaf0; }

@@ -144,6 +144,12 @@ export const ROUTE_QUESTION = {
 
 const HINT = '點左邊一張相，再點右邊同名嘅字'
 
+const typeItem = t => ({ id: 'type-' + t.id, name: t.short || t.name, image: t.image, placeholder: t.placeholder, credit: t.credit, intro: t.intro, question: t.question })
+
+// 所有第二章原有物件（按 id 查；舊存檔、配對進度靠呢啲 id）
+export const LEARNING_ITEMS = Object.fromEntries(
+  [...COMMON, ...AFTER, TRANSFER, ...LIFE_WORK, ...LIFE_SKILL, ...LIFE_LEARN, ...SCHOOL_TYPES.map(typeItem)].map(i => [i.id, i]))
+
 // 按路線同學校資料組合今章內容
 export function chapterFor(learning) {
   const r = ROUTES[learning && learning.route]
@@ -151,8 +157,7 @@ export function chapterFor(learning) {
   const s = learning.school || {}
   let rounds, items
   if (r.school) {
-    const typeItems = (s.types || []).map(id => typeById(id)).filter(Boolean)
-      .map(t => ({ id: 'type-' + t.id, name: t.short || t.name, image: t.image, placeholder: t.placeholder, credit: t.credit, intro: t.intro, question: t.question }))
+    const typeItems = (s.types || []).map(id => typeById(id)).filter(Boolean).map(typeItem)
     if ((s.types || []).length > 1 || s.multi) typeItems.push(TRANSFER)
     rounds = []
     if (typeItems.length) rounds.push({ id: 'types', title: '你讀過嘅學校', hint: HINT, items: typeItems })

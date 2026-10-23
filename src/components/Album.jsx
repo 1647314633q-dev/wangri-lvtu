@@ -13,10 +13,10 @@ function TwoTap({ label, armed, onConfirm, className = 'btn ghost' }) {
   }}>{a ? armed : label}</button>
 }
 
-const STATUS = { none: '冇乜印象', skipped: '跳過咗', undefined: '未有回憶' }
+const STATUS = { none: '冇乜印象', noexp: '冇呢段經歷（已收起）', skipped: '跳過咗', undefined: '未有回憶' }
 
 // pages: { [chapterId]: { cfg, data, stale, storyTitle, notStarted, onStart, onStory, onEditMemory, onDeleteMemory, onEditExtra, onDeleteExtra, onEditInterview, onDeleteInterview } }
-export default function Album({ pages, initialTab = 'childhood', onReset }) {
+export default function Album({ pages, initialTab = 'childhood', onReset, profileText, onEditProfile }) {
   const [editing, setEditing] = useState(null)
   const [tab, setTab] = useState(initialTab)
   const visible = CHAPTERS.filter(c => !c.hidden)
@@ -28,7 +28,10 @@ export default function Album({ pages, initialTab = 'childhood', onReset }) {
       <header className="album-head">
         <p className="kicker">往日旅途</p>
         <h1 className="h1">我的人生自傳</h1>
-        <button type="button" className="btn" onClick={() => downloadMemoir(pages)}>下載自傳文字檔</button>
+        <div className="btnrow center-row">
+          <button type="button" className="btn" onClick={() => downloadMemoir(pages)}>下載自傳文字檔</button>
+          {onEditProfile && <button type="button" className="btn ghost" onClick={onEditProfile}>{profileText ? profileText + ' · 修改' : '修改出世年份'}</button>}
+        </div>
       </header>
       <nav className="chapter-tabs" aria-label="章節">
         {visible.map(c => (
@@ -55,6 +58,15 @@ export default function Album({ pages, initialTab = 'childhood', onReset }) {
         <div className="album-page">
           <h2>{meta.no}：{meta.title}</h2>
           <p className="note">{P.cfg.years} 年代 · 香港{P.cfg.route ? ' · 路線：' + P.cfg.route.label : ''}</p>
+
+          {P.expText && (
+            <section className="school-info">
+              <h3>我揀過嘅經歷</h3>
+              <p className="mini-text">{P.expText}</p>
+              <p className="note">只係用嚟揀配對物件，唔會寫入自傳。改咗之後，已經開始嘅回合唔會變。</p>
+              <button type="button" className="btn" onClick={P.onEditExp}>修改我的經歷</button>
+            </section>
+          )}
 
           {P.schoolText && (
             <section className="school-info">
@@ -138,6 +150,7 @@ export default function Album({ pages, initialTab = 'childhood', onReset }) {
                     ) : has ? (
                       <>
                         <p className="mini-text">{m.text}</p>
+                        {(m.follow || []).filter(x => x.a).map((x, i) => <p key={i} className="mini-text"><span className="muted">{x.q}</span><br />{x.a}</p>)}
                         <div className="btnrow small">
                           <button type="button" className="btn" onClick={() => setEditing(key)}>修改</button>
                           <TwoTap label="刪除" armed="再按一次確認刪除" onConfirm={() => P.onDeleteMemory(it.id)} />

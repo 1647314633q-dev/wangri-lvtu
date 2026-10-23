@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { img } from '../lib/img.js'
-import { decadeFromAge, READY_DECADES } from '../data/chapters.js'
+import { groupOf, birthYearFromAge, GROUPS } from '../data/catalog.js'
 
 // 如果你有自己設計好嘅封面圖，放入 src/assets/images/covers/ 並命名為
 //   cover.jpg（或 .png）          → 遊戲封面
@@ -36,13 +36,20 @@ export function Cover({ onOpen, hasSave, onContinue }) {
   )
 }
 
-export function AgeAsk({ initial, onConfirm }) {
+// 問歲數 → 推算出世年份（近似，可以自己改）→ 出生組（1940–1949／1950–1959／1960–1966）
+// 範圍以外唔會默默當作某一組；要本人揀先用最接近嘅一組試玩
+export function AgeAsk({ initial, initialYear, onConfirm }) {
   const [age, setAge] = useState(initial || 81)
+  const [year, setYear] = useState(initialYear ? String(initialYear) : '')
+  const [editYear, setEditYear] = useState(false)
   const [err, setErr] = useState('')
   const ok = age >= 50 && age <= 110
-  const { birthYear, decade } = decadeFromAge(age || 0)
-  const ready = READY_DECADES.includes(decade)
+  const guess = birthYearFromAge(age || 0)
+  const by = editYear && /^\d{4}$/.test(year) ? parseInt(year, 10) : guess
+  const group = groupOf(by)
+  const nearest = by < 1940 ? '1940' : '1960'
   function set(v) { const n = parseInt(v, 10); setAge(Number.isNaN(n) ? '' : n); setErr('') }
+  const go = (g, chosen) => ok ? onConfirm({ age, birthYear: by, group: g, groupChosen: !!chosen, yearEdited: editYear }) : setErr('請輸入 50 至 110 之間嘅歲數。')
   return (
     <section className="paper-sheet narrow">
       <p className="kicker">開始之前</p>
@@ -55,20 +62,28 @@ export function AgeAsk({ initial, onConfirm }) {
       </div>
       {ok ? (
         <div className="age-result">
-          <p>你大約喺 <b>{birthYear}</b> 年出世，</p>
-          <p>我哋會返去你童年嘅 <b>{decade} 年代</b>。</p>
-          {!ready && <p className="note">試玩版暫時只完成 1940 年代嘅旅程，{decade} 年代製作中。你可以先試玩 1940 年代版本。</p>}
+          <p>你大約喺 <b>{by}</b> 年出世{group ? <>（{GROUPS[group].label}）</> : ''}。</p>
+          {!editYear ? (
+            <button type="button" className="btn small-btn" onClick={() => { setEditYear(true); setYear(String(guess)) }}>出世年份唔啱？自己改</button>
+          ) : (
+            <label className="lbl">出世年份
+              <input className="year-input" inputMode="numeric" maxLength={4} value={year} onChange={e => setYear(e.target.value.replace(/\D/g, ''))} aria-label="出世年份" />
+            </label>
+          )}
+          {!group && <p className="note">試玩版嘅內容按 1940–1966 年出世嘅長者設計，{by > 1966 ? '暫時未有 1967 年或之後出世嘅內容' : '1940 年之前出世嘅內容未有'}。你可以自己揀先用 {GROUPS[nearest].label} 嘅內容試玩，部分物件未必配合你嘅年代。</p>}
         </div>
       ) : <p className="note">請輸入 50 至 110 之間嘅歲數。</p>}
       {err && <p className="msg">{err}</p>}
-      <button type="button" className="btn primary big" onClick={() => ok ? onConfirm(age) : setErr('請輸入 50 至 110 之間嘅歲數。')}>
-        {ready || !ok ? '出發去 ' + (ok ? decade : 1940) + ' 年代' : '先試玩 1940 年代'}
-      </button>
+      {group || !ok ? (
+        <button type="button" className="btn primary big" onClick={() => go(group)}>出發</button>
+      ) : (
+        <button type="button" className="btn primary big" onClick={() => go(nearest, true)}>先用 {GROUPS[nearest].label} 嘅內容試玩</button>
+      )}
     </section>
   )
 }
 
-export function ChapterCover({ n = 1, no = '第一章', title = '童年時光', years = '1940 – 1950', note = '配對兩張一樣嘅詞語，打開一段童年回憶。', onEnter }) {
+export function ChapterCover({ n = 1, no = '第一章', title = '童年時光', years = '1940 – 1950', note = '配對兩張一樣嘅詞語，打開一段童年回憶。', photo, onEnter }) {
   const custom = CUSTOM_CH[n]
   if (custom) {
     return (
@@ -83,7 +98,7 @@ export function ChapterCover({ n = 1, no = '第一章', title = '童年時光', 
   return (
     <section className="cover-screen">
       <button type="button" className="chapter-cover" onClick={onEnter} aria-label={'進入' + no + '：' + title}>
-        <img src={PHOTO[n]} alt="" />
+        <img src={photo || PHOTO[n]} alt="" />
         <span className="cc-text">
           <span className="cc-no">{no}</span>
           <span className="cc-title">{title}</span>

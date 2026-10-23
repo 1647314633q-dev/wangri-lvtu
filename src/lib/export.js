@@ -16,7 +16,9 @@ export function memoirText(pages) {
     }
     for (const item of p.cfg.items) {
       const memory = p.data.memories[item.id]
-      if (memory?.status === 'shared') lines.push(item.name + '：' + memory.text)
+      if (memory?.status !== 'shared') continue
+      lines.push(item.name + '：' + memory.text)
+      for (const f of memory.follow || []) if (f.a) lines.push('  ' + f.q + ' ' + f.a)
     }
     for (const h of p.data.interview || []) if (!h.skipped && h.a) lines.push(h.q, h.a)
     if (p.data.extra?.text) lines.push('其他難忘回憶：' + p.data.extra.text)
