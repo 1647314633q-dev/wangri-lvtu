@@ -74,7 +74,7 @@ test('有 DeepSeek 金鑰：/api/status 報 deepseek，並用 DeepSeek 格式呼
 test('冇金鑰但有 Workers AI：用免費 Workers AI，第一個型號出錯會試下一個', async () => {
   const runs = []
   const AI = { run: async (m, input) => { runs.push(m); if (runs.length === 1) throw new Error('model gone'); return { response: '<think>…</think>我細個喺鄉下。' } } }
-  const e3 = { ...env, AI_ENABLED: 'true', AI, WORKERS_AI_MODEL: '@cf/qwen/qwen3-30b-a3b-fp8' }
+  const e3 = { ...env, AI_ENABLED: 'true', AI, WORKERS_AI_MODEL: '@cf/example/first-model' }
   assert.equal((await (await worker.fetch(req('/api/status'), e3)).json()).ai, 'workers-ai')
   const r = await worker.fetch(req('/api/ai', { prompt: '記憶' }), e3)
   assert.equal((await r.json()).text, '我細個喺鄉下。')

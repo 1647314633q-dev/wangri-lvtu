@@ -1,6 +1,6 @@
 // Cloudflare Workers AI：用 Cloudflare 帳戶本身嘅免費額度（唔使金鑰；免費計劃每日有額度，UTC 零時重置）。
-// 型號可以喺 wrangler.toml 嘅 WORKERS_AI_MODEL 改；第一個用唔到就試下一個。
-const FALLBACK = ['@cf/qwen/qwen3-30b-a3b-fp8', '@cf/meta/llama-3.3-70b-instruct-fp8-fast']
+// 預設用 Llama 3.3 70B（唔用千問）；可以喺 wrangler.toml 加 WORKERS_AI_MODEL 改其他型號。
+const FALLBACK = ['@cf/meta/llama-3.3-70b-instruct-fp8-fast']
 
 function textOf(r) {
   const t = typeof r === 'string' ? r

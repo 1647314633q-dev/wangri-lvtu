@@ -7,9 +7,7 @@ compatibility_date = "2025-09-01"
 [vars]
 GEMINI_MODEL = "gemini-3.6-flash"
 DEEPSEEK_MODEL = "deepseek-chat"
-# Cloudflare Workers AI（免費額度、唔使金鑰）用嘅型號；用唔到會自動試 Llama 3.3 70B
-WORKERS_AI_MODEL = "@cf/qwen/qwen3-30b-a3b-fp8"
-# AI 開關：已開。預設用 Cloudflare Workers AI（免費每日額度，唔使金鑰）。
+# AI 開關：已開。有 GEMINI_API_KEY 就用 Gemini；出錯時用 Cloudflare Workers AI 嘅 Llama 3.3 70B（免費，唔使金鑰）做後備。
 # 想改用其他 AI：喺 Cloudflare Pages 專案（Settings → Variables and Secrets）加 Secret GEMINI_API_KEY 或者 DEEPSEEK_API_KEY 就會優先用；
 # 出錯時自動轉用 Workers AI；全部用唔到就將長者講過嘅說話按次序排好，遊戲照常運作。想完全關閉 AI，改做 "false"。
 AI_ENABLED = "true"
