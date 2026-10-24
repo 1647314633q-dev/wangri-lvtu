@@ -3,7 +3,7 @@ import { FAMILY_CARDS, familySummary } from './data/childhood1940.js'
 import { ROUTES, schoolSummary } from './data/learning1940.js'
 import { expSummary, mergePlan } from './data/catalog.js'
 import { ORDER, META, cfgOf as buildCfg, computePlan, usedKeys, coverPhoto, yearsOf, profileGroup } from './data/journey.js'
-import { load, save, clearAll, EMPTY } from './lib/storage.js'
+import { load, save, clearAll, EMPTY, migrate, loadArchive, saveArchive, archiveBook, hasContent } from './lib/storage.js'
 import { Cover, AgeAsk, ChapterCover, Congrats } from './components/Screens.jsx'
 import MemoryCard, { FinalCard } from './components/MemoryCard.jsx'
 import StoryPage from './components/StoryPage.jsx'
@@ -23,6 +23,8 @@ export default function App() {
   const [toast, setToast] = useState('')
   const [roundDone, setRoundDone] = useState(null)
   const [albumTab, setAlbumTab] = useState('childhood')
+  const [archive, setArchive] = useState(loadArchive)
+  useEffect(() => { saveArchive(archive) }, [archive])
   const [familyOpen, setFamilyOpen] = useState(() => typeof window !== 'undefined' && window.innerWidth >= 1180)
 
   useEffect(() => { save(state) }, [state])
@@ -258,7 +260,10 @@ export default function App() {
         <header className="topbar">
           <button type="button" className="btn back" onClick={back}>← 返回</button>
           <span className="brand">往日旅途</span>
-          <button type="button" className="btn" onClick={() => view !== 'album' && go('album')} disabled={view === 'album'}>📖 我的自傳</button>
+          <span className="topbar-right">
+            <button type="button" className="btn" onClick={() => view !== 'album' && go('album')} disabled={view === 'album'}>📖 我的自傳</button>
+            <button type="button" className="btn" onClick={() => view !== 'newbook' && go('newbook')} disabled={view === 'newbook'}>＋ 新增自傳</button>
+          </span>
         </header>
       )}
 
@@ -288,9 +293,22 @@ export default function App() {
           onSave={story => setChap(chId, c => ({ ...c, story }))} onBack={back}
           onAlbum={() => { setToast('已保存到你嘅人生自傳'); setAlbumTab(chId); go('album') }} />}
 
+        {view === 'newbook' && <NewBook current={state} onCancel={back} onConfirm={name => {
+          setArchive(a => archiveBook(a, state, name))
+          setState(structuredClone(EMPTY)); setHistory([]); setScreen('age'); setAlbumTab('childhood')
+          setToast(hasContent(state) ? '舊嗰篇已經保存喺「以前嘅自傳」' : '開始新嘅一篇自傳')
+        }} />}
+
         {view === 'album' && <Album key={albumTab} initialTab={albumTab}
           pages={Object.fromEntries(ORDER.map(id => [id, pageFor(id)]))}
           profileText={state.profile ? '大約 ' + state.profile.birthYear + ' 年出世' : ''} onEditProfile={() => go('age')}
+          archive={archive}
+          onOpenBook={book => {
+            setArchive(a => archiveBook(a.filter(x => x.id !== book.id), state))
+            setState({ ...migrate(book.state), bookName: book.name || '' }); setHistory([]); setScreen('album'); setAlbumTab('childhood')
+            setToast('已打開' + (book.name ? '「' + book.name + '」嘅' : '以前嘅') + '自傳')
+          }}
+          onDeleteBook={id => { setArchive(a => a.filter(x => x.id !== id)); setToast('已刪除嗰篇自傳') }}
           onReset={() => { clearAll(); setState(structuredClone(EMPTY)); setHistory([]); setScreen('cover'); setToast('已清除所有紀錄') }} />}
       </main>
       {view === 'play' && chId === 'childhood' && (
@@ -310,4 +328,28 @@ function SchoolEdit({ learning, birthYear, onSave, onCancel }) {
   const [draft, setDraft] = useState(learning.school || {})
   if (step === 'types') return <SchoolType initial={draft} onBack={onCancel} onDone={v => { setDraft(d => ({ ...d, ...v })); setStep('years') }} />
   return <SchoolYears initial={draft} birthYear={birthYear} onBackToTypes={v => { setDraft(d => ({ ...d, ...v })); setStep('types') }} onDone={v => onSave({ ...draft, ...v })} />
+}
+
+// 新增自傳：而家呢篇自動保存去「以前嘅自傳」，然後由頭開始新嘅一篇（例如換另一位長者）
+function NewBook({ current, onConfirm, onCancel }) {
+  const [name, setName] = useState(current.bookName || '')
+  const has = hasContent(current)
+  return (
+    <section className="paper-sheet narrow">
+      <p className="kicker">新增自傳</p>
+      <h1 className="h1">開始新嘅一篇自傳？</h1>
+      {has ? (
+        <>
+          <p className="lead">而家呢篇{current.profile ? '（大約 ' + current.profile.birthYear + ' 年出世）' : ''}唔會刪除，會保存喺「我的自傳 → 以前嘅自傳」，隨時可以打開返繼續。</p>
+          <label className="lbl">而家呢篇係邊位嘅？（可以唔填）
+            <input className="name-input" value={name} maxLength={30} placeholder="例如：陳婆婆" onChange={e => setName(e.target.value)} />
+          </label>
+        </>
+      ) : <p className="lead">而家未有任何回憶，會直接開始新嘅一篇。</p>}
+      <div className="btncol">
+        <button type="button" className="btn primary big" onClick={() => onConfirm(name)}>開始新嘅一篇</button>
+        <button type="button" className="btn big" onClick={onCancel}>取消</button>
+      </div>
+    </section>
+  )
 }

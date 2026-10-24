@@ -16,7 +16,7 @@ function TwoTap({ label, armed, onConfirm, className = 'btn ghost' }) {
 const STATUS = { none: '冇乜印象', noexp: '冇呢段經歷（已收起）', skipped: '跳過咗', undefined: '未有回憶' }
 
 // pages: { [chapterId]: { cfg, data, stale, storyTitle, notStarted, onStart, onStory, onEditMemory, onDeleteMemory, onEditExtra, onDeleteExtra, onEditInterview, onDeleteInterview } }
-export default function Album({ pages, initialTab = 'childhood', onReset, profileText, onEditProfile }) {
+export default function Album({ pages, initialTab = 'childhood', onReset, profileText, onEditProfile, archive = [], onOpenBook, onDeleteBook }) {
   const [editing, setEditing] = useState(null)
   const [tab, setTab] = useState(initialTab)
   const visible = CHAPTERS.filter(c => !c.hidden)
@@ -221,6 +221,22 @@ export default function Album({ pages, initialTab = 'childhood', onReset, profil
           </div>
           {P.next && <div className="btnrow center-row"><button type="button" className="btn primary big" onClick={P.onNext}>{P.next}</button></div>}
         </div>
+      )}
+      {archive.length > 0 && (
+        <section className="album-page old-books">
+          <h2>以前嘅自傳</h2>
+          <p className="note">打開之後，而家呢篇會自動保存返落呢度。</p>
+          {archive.map(b => (
+            <article key={b.id} className="mini">
+              <h4>{b.name || (b.state?.profile ? '大約 ' + b.state.profile.birthYear + ' 年出世' : '未命名嘅自傳')}</h4>
+              <p className="note">{b.name && b.state?.profile ? '大約 ' + b.state.profile.birthYear + ' 年出世 · ' : ''}保存於 {new Date(b.savedAt).toLocaleDateString('zh-HK')}</p>
+              <div className="btnrow small">
+                <button type="button" className="btn primary" onClick={() => onOpenBook(b)}>打開呢篇</button>
+                <TwoTap label="刪除" armed="再按一次確認刪除" onConfirm={() => onDeleteBook(b.id)} />
+              </div>
+            </article>
+          ))}
+        </section>
       )}
       <div className="reset-row">
         <TwoTap label="清除所有紀錄，由頭開始" armed="再按一次：清除所有回憶" onConfirm={onReset} />

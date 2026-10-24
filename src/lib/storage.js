@@ -66,3 +66,18 @@ export function save(state) {
 export function clearAll() {
   try { localStorage.removeItem(KEY) } catch { /* ignore */ }
 }
+
+// ---------- 以前嘅自傳（「新增自傳」之前嗰篇會保存喺度，隨時可以打開返） ----------
+const ARCHIVE_KEY = 'wangri-lvtu-archive'
+export const hasContent = st => !!st?.profile || ['childhood', 'learning', 'society', 'events', 'later'].some(id => st?.[id]?.cleared?.length || st?.[id]?.finalDone)
+export function loadArchive() {
+  try { const a = JSON.parse(localStorage.getItem(ARCHIVE_KEY) || '[]'); return Array.isArray(a) ? a : [] } catch { return [] }
+}
+export function saveArchive(list) {
+  try { localStorage.setItem(ARCHIVE_KEY, JSON.stringify(list)); return true } catch { return false }
+}
+// 將而家呢篇放入「以前嘅自傳」；冇內容就唔放
+export function archiveBook(list, state, name = '') {
+  if (!hasContent(state)) return list
+  return [{ id: Date.now(), savedAt: Date.now(), name: (name || state.bookName || '').trim().slice(0, 30), state }, ...list]
+}
