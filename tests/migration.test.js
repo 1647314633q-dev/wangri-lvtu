@@ -56,3 +56,17 @@ test('export includes shared family memories only', () => {
   assert.ok(text.includes('刨木'))
   assert.ok(!text.includes('媽媽'))
 })
+
+test('有 DeepSeek 金鑰：/api/status 報 deepseek，並用 DeepSeek 格式呼叫', async () => {
+  const original = globalThis.fetch
+  let called = ''
+  globalThis.fetch = async (u, o) => { called = String(u) + ' ' + o.headers.Authorization; return new Response(JSON.stringify({ choices: [{ message: { content: '我細個住寮屋。' } }] }), { status: 200 }) }
+  try {
+    const e2 = { ...env, AI_ENABLED: 'true', DEEPSEEK_API_KEY: 'test-only' }
+    assert.equal((await (await worker.fetch(req('/api/status'), e2)).json()).ai, 'deepseek')
+    const r = await worker.fetch(req('/api/ai', { prompt: '記憶' }), e2)
+    assert.equal((await r.json()).text, '我細個住寮屋。')
+    assert.ok(called.startsWith('https://api.deepseek.com/chat/completions Bearer test-only'))
+    assert.equal((await (await worker.fetch(req('/api/status'), { ...env, AI_ENABLED: 'true' })).json()).ai, 'local', '冇金鑰就係原話整理')
+  } finally { globalThis.fetch = original }
+})

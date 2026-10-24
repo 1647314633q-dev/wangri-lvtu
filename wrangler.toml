@@ -12,12 +12,11 @@ run_worker_first = ["/api/*", "/health"]
 
 [vars]
 GEMINI_MODEL = "gemini-3.6-flash"
-# AI 開關：要用 Gemini 整理故事，先用 `npx wrangler secret put GEMINI_API_KEY` 設定金鑰，再將下面改做 "true"。
-# 未開時遊戲照常運作，故事會改為將長者講過嘅說話按次序排好。
-# 注意：Gemini API 唔接受由香港 IP 發出嘅請求；如果開咗之後喺香港用唔到，可以加返：
-#   [placement]
-#   region = "gcp:us-central1"
-AI_ENABLED = "false"
+DEEPSEEK_MODEL = "deepseek-chat"
+# AI 開關：已開。只要喺 Cloudflare（Settings → Variables and Secrets）加一個 Secret 就會用 AI 整理故事：
+#   DEEPSEEK_API_KEY（建議，香港可以直接用）或者 GEMINI_API_KEY（Gemini 唔接受香港連線，要另外設定美國伺服器）
+# 冇金鑰時遊戲照常運作，故事會改為將長者講過嘅說話按次序排好。想完全關閉 AI，改做 "false"。
+AI_ENABLED = "true"
 
 [observability]
 enabled = false

@@ -7,10 +7,11 @@
 const ENDPOINT = import.meta.env?.VITE_AI_ENDPOINT || ''
 // 伺服器有冇開 AI（/api/status 回應 ai: 'gemini' 先算）；只問一次
 let serverStatus
+let provider = ''   // 'deepseek' | 'gemini'
 async function serverReady() {
   if (!ENDPOINT) return false
   if (!serverStatus) serverStatus = fetch('/api/status', { signal: AbortSignal.timeout(5000) })
-    .then(r => r.ok ? r.json() : null).then(s => s?.ai === 'gemini').catch(() => false)
+    .then(r => r.ok ? r.json() : null).then(s => { provider = s?.ai && s.ai !== 'local' ? s.ai : ''; return !!provider }).catch(() => false)
   return serverStatus
 }
 async function callServer(prompt, { json = false, signal } = {}) {
@@ -89,7 +90,7 @@ export async function generateStory(entries, profile, { onText, signal, chapterT
     try {
       const text = await callServer(prompt, { signal })
       if (onText) onText(text)
-      return { text, source: 'server' }
+      return { text, source: provider || 'server' }
     } catch (e) {
       if (signal && signal.aborted) throw e
       // 伺服器用唔到：改為只排好長者原話，唔會令遊戲卡住

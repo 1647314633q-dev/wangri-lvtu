@@ -1,11 +1,21 @@
 import { callGemini } from './gemini.js'
+import { callDeepSeek } from './deepseek.js'
+
+// 用邊個 AI：AI_PROVIDER 指定；冇指定就睇設定咗邊條金鑰（DeepSeek 優先，因為香港可以直接用）
+function providerOf(env) {
+  const p = env.AI_PROVIDER || (env.DEEPSEEK_API_KEY ? 'deepseek' : env.GEMINI_API_KEY ? 'gemini' : '')
+  if (p === 'deepseek' && env.DEEPSEEK_API_KEY) return 'deepseek'
+  if (p === 'gemini' && env.GEMINI_API_KEY) return 'gemini'
+  return ''
+}
 const json = (body, status = 200) => Response.json(body, { status, headers: { 'Cache-Control': 'no-store', 'X-Content-Type-Options': 'nosniff' } })
 export default {
   async fetch(request, env) {
     const url = new URL(request.url)
-    const enabled = env.AI_ENABLED === 'true' && !!env.GEMINI_API_KEY
+    const provider = env.AI_ENABLED === 'true' ? providerOf(env) : ''
+    const enabled = !!provider
     if (url.pathname === '/health' || url.pathname === '/api/status') {
-      return json({ site: 'wangri-lvtu-hk', ok: true, ai: enabled ? 'gemini' : 'local', storage: 'browser-only' })
+      return json({ site: 'wangri-lvtu-hk', ok: true, ai: provider || 'local', storage: 'browser-only' })
     }
     if (url.pathname === '/api/ai') {
       if (request.method !== 'POST') return json({ error: 'Method not allowed' }, 405)
@@ -30,7 +40,10 @@ export default {
       try { input = JSON.parse(new TextDecoder().decode(bytes)) } catch { return json({ error: 'Invalid JSON' }, 400) }
       if (!input || typeof input.prompt !== 'string' || !input.prompt.trim() || input.prompt.length > 20000) return json({ error: 'Invalid prompt' }, 400)
       try {
-        const text = await callGemini({ prompt: input.prompt, json: !!input.json, apiKey: env.GEMINI_API_KEY, model: env.GEMINI_MODEL })
+        const args = { prompt: input.prompt, json: !!input.json }
+        const text = provider === 'deepseek'
+          ? await callDeepSeek({ ...args, apiKey: env.DEEPSEEK_API_KEY, model: env.DEEPSEEK_MODEL })
+          : await callGemini({ ...args, apiKey: env.GEMINI_API_KEY, model: env.GEMINI_MODEL })
         return json({ text })
       } catch {
         return json({ error: 'AI 暫時未能使用，請使用原話整理。' }, 502)
