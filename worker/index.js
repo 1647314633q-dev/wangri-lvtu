@@ -18,7 +18,7 @@ export default {
     const provider = env.AI_ENABLED === 'true' ? providerOf(env) : ''
     const enabled = !!provider
     if (url.pathname === '/health' || url.pathname === '/api/status') {
-      return json({ site: 'wangri-lvtu-hk', ok: true, ai: provider || 'local', storage: 'browser-only' })
+      return json({ site: 'trails-of-the-past', ok: true, ai: provider || 'local', storage: 'browser-only' })
     }
     if (url.pathname === '/api/ai') {
       if (request.method !== 'POST') return json({ error: 'Method not allowed' }, 405)

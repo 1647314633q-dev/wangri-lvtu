@@ -1,25 +1,20 @@
-# 部署去 Cloudflare Workers（workers.dev，免費網域，香港可以直接打開）
+# 部署去 Cloudflare Pages（trails-of-the-past.pages.dev，免費網域，香港可以直接打開）
 
-## Windows：雙擊 `deploy-windows.bat`
-1. 要先裝 Node.js LTS（https://nodejs.org）。
-2. 雙擊 `deploy-windows.bat` → 瀏覽器打開 Cloudflare，**你自己登入**並按 Allow → 第一次會叫你改一個 workers.dev 子網域名。
-3. AI 預設關閉，遊戲照常玩得；要開 AI 見下面。
-4. 完成後網址：`https://wangri-lvtu.<你嘅子網域>.workers.dev`。
-AI 預設關閉（`wrangler.toml` 嘅 `AI_ENABLED = "false"`）。要開：先 `npx wrangler secret put GEMINI_API_KEY`，再將 `AI_ENABLED` 改做 `"true"` 重新部署。
-狀態檢查：`/health` 會回應 `ai: "gemini"` 或 `"local"`。測試：`npm test`。
+## 推薦：連 GitHub 自動部署（Cloudflare Pages）
+1. Cloudflare → Workers & Pages → Create → Pages → Connect to Git → 揀 repo `wangri-lvtu`
+2. Project name：`trails-of-the-past`；Production branch：`main`；Framework preset：None
+3. Build command：`npm run build:pages`；Build output directory：`dist`
+4. Save and Deploy。之後推上 `main` 就自動更新；其他分支會有預覽網址。
+5. AI：`wrangler.toml` 已設定免費 Workers AI（唔使金鑰）。想用 Gemini／DeepSeek，喺 Pages 專案 Settings → Variables and Secrets 加 Secret `GEMINI_API_KEY`／`DEEPSEEK_API_KEY`。
 
-## 手動指令
+## 舊網址轉去新網址
+`redirect/` 係舊 Worker（wangri-lvtu-hk.visionlink-workspace.workers.dev）嘅轉址程式：
+喺 Cloudflare 舊 Worker → Settings → Build，將 Deploy command 改成 `npx wrangler deploy -c redirect/wrangler.toml`，Build command 留空，然後重新部署。
+舊連結、二維碼會自動轉去新網址（保留路徑）。
 
-```bash
-npm ci                                  # 安裝依賴（包括 wrangler）
-npm run build:cloudflare                # 打包網站到 dist/，前端 AI 指向 /api/ai
-npx wrangler login                      # 登入 Cloudflare（或者設定 CLOUDFLARE_API_TOKEN）
-npx wrangler secret put GEMINI_API_KEY  # 輸入 Gemini API key（只存喺 Cloudflare）
-npx wrangler deploy                     # 部署 Worker + 靜態資產
-```
-或者一句：`npm run deploy`（= build:cloudflare + wrangler deploy）。
+## Windows：雙擊 `deploy-windows.bat`（唔用 GitHub 自動部署時）
+會打包同用 `wrangler pages deploy` 部署。
 
-- Worker 名：`wangri-lvtu`（喺 `wrangler.toml` 改）。網址：`https://wangri-lvtu.<帳戶子網域>.workers.dev`
-- 結構：`worker/index.js` 處理 `POST /api/ai`；其他路徑由 `[assets]`（`dist/`）提供。
-- 已附上預先打包好嘅 `dist/`，可以跳過 build 直接 `npx wrangler deploy`。
-- 本機測試 Worker：`npm run build:cloudflare && npx wrangler dev`（要喺 `.dev.vars` 寫 `GEMINI_API_KEY=...`，呢個檔已列入 .gitignore）。
+## 注意
+- 遊戲紀錄存喺每部裝置嘅瀏覽器，按網址分開；換網址之後，舊網址嘅紀錄唔會自動出現，請先「下載自傳文字檔」留底。
+- 測試：`npm test`；本機試 Pages：`npm run build:pages && npx wrangler pages dev dist`

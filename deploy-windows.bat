@@ -29,15 +29,15 @@ if errorlevel 1 ( echo 登入未完成。 & pause & exit /b 1 )
 
 echo.
 echo [3/4] 打包網站……
-call npm run build:cloudflare
+call npm run build:pages
 if errorlevel 1 ( echo 打包失敗。 & pause & exit /b 1 )
 
 echo.
-echo [4/4] 部署……（第一次可能會問你揀 workers.dev 子網域名稱，輸入一個英文名就得）
-call npx wrangler deploy
+echo [4/4] 部署去 Cloudflare Pages（trails-of-the-past.pages.dev）……
+call npx wrangler pages deploy
 if errorlevel 1 ( echo 部署失敗，請影低上面嘅訊息。 & pause & exit /b 1 )
 
 echo.
-echo 完成！上面 "https://wangri-lvtu.xxxx.workers.dev" 就係網址，任何人（包括香港）都可以直接打開。
+echo 完成！網址：https://trails-of-the-past.pages.dev ，任何人（包括香港）都可以直接打開。
 echo AI 預設關閉：故事會將長者講過嘅說話按次序排好。想開 AI 請睇 wrangler.toml 入面 AI_ENABLED 嘅說明。
 pause

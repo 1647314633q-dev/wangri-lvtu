@@ -3,8 +3,8 @@
 透過懷舊物件配對、回憶分享同 AI 整理，幫香港長者一步步記錄自己嘅人生故事。
 五章：童年時光、求學歲月、踏入社會、期間大事件、晚年生活。按**出生組（1940–1949／1950–1959／1960–1966）**同**本人確認嘅經歷**揀配對物件，共 92 筆分齡及個人經歷素材。
 
-**[▶ 開啟遊戲](https://wangri-lvtu-hk.visionlink-workspace.workers.dev/)** · 免費、香港可以直接開、唔使登入 · 電腦、平板、手機都用得
-（網站由 Cloudflare Workers 提供，網址：https://wangri-lvtu-hk.visionlink-workspace.workers.dev/ ）
+**[▶ 開啟遊戲](https://trails-of-the-past.pages.dev/)** · 免費、香港可以直接開、唔使登入 · 電腦、平板、手機都用得
+（網站由 Cloudflare Pages 提供，網址：https://trails-of-the-past.pages.dev/ ；舊網址會自動轉過嚟）
 
 | 封面 | 第一章 · 配對 + 我的家庭 |
 |---|---|
@@ -32,16 +32,13 @@
 相片年份只係同類物件參考，唔等於長者經歷嘅年份。來源同權利狀態見 [`docs/photo-sources.md`](docs/photo-sources.md)；
 刪走某張相片，遊戲會自動改用同名嘅「示意插畫」。
 
-## 部署（Cloudflare Workers，免費 workers.dev 網域）
+## 部署（Cloudflare Pages，免費網域 trails-of-the-past.pages.dev）
 
-**推薦：連 GitHub 自動部署** —— Cloudflare → Workers & Pages → Create → Import a repository → 揀呢個 repo：
-- Build command：`npm run build:cloudflare`
-- Deploy command：`npx wrangler deploy`
-- AI 預設關閉（`AI_ENABLED = "false"`），遊戲照常玩得。要開：加 Secret `GEMINI_API_KEY`，再將 `wrangler.toml` 嘅 `AI_ENABLED` 改做 `"true"`
+Cloudflare → Workers & Pages → Create → Pages → Connect to Git → 揀呢個 repo：
+- Project name：`trails-of-the-past`，Production branch：`main`
+- Build command：`npm run build:pages`，Build output directory：`dist`
 
-之後每次推上 `main`，網站就會自動更新。其他方法（Windows 雙擊 `deploy-windows.bat`、手動指令）見 [`DEPLOY.md`](DEPLOY.md)。
-
----
+之後每次推上 `main`，網站就會自動更新。AI 預設用免費 Cloudflare Workers AI；詳細見 [`DEPLOY.md`](DEPLOY.md)。
 
 ## 一、安裝同執行
 

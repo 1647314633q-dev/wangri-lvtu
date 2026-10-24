@@ -1,0 +1,10 @@
+# 舊網址 wangri-lvtu-hk.visionlink-workspace.workers.dev → 新網址（保留路徑），舊連結、二維碼照用得
+# 部署：npx wrangler deploy -c redirect/wrangler.toml（Cloudflare 舊 Worker 嘅 Builds → Deploy command 改成呢句）
+name = "wangri-lvtu-hk"
+main = "index.js"
+compatibility_date = "2025-09-01"
+workers_dev = true
+preview_urls = false
+
+[vars]
+NEW_URL = "https://trails-of-the-past.pages.dev"

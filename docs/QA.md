@@ -1,6 +1,6 @@
 # 搬遷驗證 · 2026-10-21
 
-部署：`https://wangri-lvtu-hk.visionlink-workspace.workers.dev/`
+部署：`https://trails-of-the-past.pages.dev/`
 Worker 版本：`cd94da8f-f6df-419b-9401-b44944711970`
 
 ## 已驗證
