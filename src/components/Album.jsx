@@ -57,7 +57,7 @@ export default function Album({ pages, initialTab = 'childhood', onReset, profil
       ) : (
         <div className="album-page">
           <h2>{meta.no}：{meta.title}</h2>
-          <p className="note">{P.cfg.years} 年代 · 香港{P.cfg.route ? ' · 路線：' + P.cfg.route.label : ''}</p>
+          <p className="note">{P.cfg.years}{P.cfg.route ? ' · 路線：' + P.cfg.route.label : ''}</p>
 
           {P.expText && (
             <section className="school-info">
