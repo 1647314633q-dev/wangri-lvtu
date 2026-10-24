@@ -28,9 +28,9 @@
 
 ## 圖片同版權
 
-公開版**冇包任何未取得授權嘅歷史相片**，全部用原創、清楚標示「示意插畫」嘅 SVG。
-取得授權之後，將相片用同一個檔名放入 `src/assets/images/…`（例如 `childhood/marbles.jpg`），重新打包就會自動取代插畫；
-`.gitignore` 已設定唔會將 jpg 相片推上 GitHub。每張相嘅來源同限制見 [`docs/photo-sources.md`](docs/photo-sources.md)。
+遊戲使用香港政府網站（政府檔案處、房屋署等）可查閱嘅歷史相片，回憶卡顯示每張相嘅年份、來源同檔案編號。
+相片年份只係同類物件參考，唔等於長者經歷嘅年份。來源同權利狀態見 [`docs/photo-sources.md`](docs/photo-sources.md)；
+刪走某張相片，遊戲會自動改用同名嘅「示意插畫」。
 
 ## 部署（Cloudflare Workers，免費 workers.dev 網域）
 
