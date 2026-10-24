@@ -13,10 +13,16 @@ run_worker_first = ["/api/*", "/health"]
 [vars]
 GEMINI_MODEL = "gemini-3.6-flash"
 DEEPSEEK_MODEL = "deepseek-chat"
-# AI 開關：已開。只要喺 Cloudflare（Settings → Variables and Secrets）加一個 Secret 就會用 AI 整理故事：
-#   DEEPSEEK_API_KEY（建議，香港可以直接用）或者 GEMINI_API_KEY（Gemini 唔接受香港連線，要另外設定美國伺服器）
-# 冇金鑰時遊戲照常運作，故事會改為將長者講過嘅說話按次序排好。想完全關閉 AI，改做 "false"。
+# Cloudflare Workers AI（免費額度、唔使金鑰）用嘅型號；用唔到會自動試 Llama 3.3 70B
+WORKERS_AI_MODEL = "@cf/qwen/qwen3-30b-a3b-fp8"
+# AI 開關：已開。預設用 Cloudflare Workers AI（免費每日額度，唔使金鑰）。
+# 想改用付費 AI：喺 Cloudflare（Settings → Variables and Secrets）加 Secret DEEPSEEK_API_KEY 或者 GEMINI_API_KEY 就會優先用。
+# 免費額度用完或者 AI 出錯時，故事會改為將長者講過嘅說話按次序排好，遊戲照常運作。想完全關閉 AI，改做 "false"。
 AI_ENABLED = "true"
 
 [observability]
 enabled = false
+
+# Cloudflare Workers AI（免費）
+[ai]
+binding = "AI"

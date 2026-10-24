@@ -1,11 +1,14 @@
 import { callGemini } from './gemini.js'
 import { callDeepSeek } from './deepseek.js'
+import { callWorkersAI } from './workers-ai.js'
 
-// 用邊個 AI：AI_PROVIDER 指定；冇指定就睇設定咗邊條金鑰（DeepSeek 優先，因為香港可以直接用）
+// 用邊個 AI：AI_PROVIDER 指定；冇指定就：有 DeepSeek 金鑰用 DeepSeek，有 Gemini 金鑰用 Gemini，
+// 兩樣都冇就用 Cloudflare Workers AI（免費額度，唔使金鑰）
 function providerOf(env) {
-  const p = env.AI_PROVIDER || (env.DEEPSEEK_API_KEY ? 'deepseek' : env.GEMINI_API_KEY ? 'gemini' : '')
+  const p = env.AI_PROVIDER || (env.DEEPSEEK_API_KEY ? 'deepseek' : env.GEMINI_API_KEY ? 'gemini' : env.AI ? 'workers-ai' : '')
   if (p === 'deepseek' && env.DEEPSEEK_API_KEY) return 'deepseek'
   if (p === 'gemini' && env.GEMINI_API_KEY) return 'gemini'
+  if (p === 'workers-ai' && env.AI) return 'workers-ai'
   return ''
 }
 const json = (body, status = 200) => Response.json(body, { status, headers: { 'Cache-Control': 'no-store', 'X-Content-Type-Options': 'nosniff' } })
@@ -43,7 +46,9 @@ export default {
         const args = { prompt: input.prompt, json: !!input.json }
         const text = provider === 'deepseek'
           ? await callDeepSeek({ ...args, apiKey: env.DEEPSEEK_API_KEY, model: env.DEEPSEEK_MODEL })
-          : await callGemini({ ...args, apiKey: env.GEMINI_API_KEY, model: env.GEMINI_MODEL })
+          : provider === 'workers-ai'
+            ? await callWorkersAI({ ...args, ai: env.AI, model: env.WORKERS_AI_MODEL })
+            : await callGemini({ ...args, apiKey: env.GEMINI_API_KEY, model: env.GEMINI_MODEL })
         return json({ text })
       } catch {
         return json({ error: 'AI 暫時未能使用，請使用原話整理。' }, 502)
