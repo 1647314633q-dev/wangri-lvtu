@@ -48,10 +48,10 @@ export default {
           : p === 'workers-ai' ? callWorkersAI({ ...args, ai: env.AI, model: env.WORKERS_AI_MODEL })
           : callGemini({ ...args, apiKey: env.GEMINI_API_KEY, model: env.GEMINI_MODEL })
         try {
-          return json({ text: await call(provider) })
+          return json({ text: await call(provider), provider })
         } catch (e) {
           // 付費／外部 AI 出錯（例如 Gemini 拒絕香港連線）：轉用免費 Workers AI
-          if (provider !== 'workers-ai' && env.AI) return json({ text: await call('workers-ai') })
+          if (provider !== 'workers-ai' && env.AI) return json({ text: await call('workers-ai'), provider: 'workers-ai', fallbackFrom: provider })
           throw e
         }
       } catch {

@@ -7,7 +7,8 @@
 const ENDPOINT = import.meta.env?.VITE_AI_ENDPOINT || ''
 // 伺服器有冇開 AI（/api/status 回應 ai: 'gemini' 先算）；只問一次
 let serverStatus
-let provider = ''   // 'deepseek' | 'gemini'
+let provider = ''   // 設定咗嘅 AI：'deepseek' | 'gemini' | 'workers-ai'
+let lastProvider = ''
 async function serverReady() {
   if (!ENDPOINT) return false
   if (!serverStatus) serverStatus = fetch('/api/status', { signal: AbortSignal.timeout(5000) })
@@ -16,10 +17,11 @@ async function serverReady() {
 }
 async function callServer(prompt, { json = false, signal } = {}) {
   if (!await serverReady()) throw new Error('AI 未啟用')
-  const timeout = AbortSignal.timeout(25000)
+  const timeout = AbortSignal.timeout(45000)
   const res = await fetch(ENDPOINT, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ prompt, json }), signal: signal ? AbortSignal.any([signal, timeout]) : timeout })
   if (!res.ok) throw new Error('AI 伺服器出錯（' + res.status + '）')
   const data = await res.json()
+  lastProvider = data.provider || provider   // 實際用咗邊個（Gemini 失敗會轉 Workers AI）
   const text = String(data.text || '').trim()
   if (!text) throw new Error('AI 冇回覆')
   if (!json) return text
@@ -90,7 +92,7 @@ export async function generateStory(entries, profile, { onText, signal, chapterT
     try {
       const text = await callServer(prompt, { signal })
       if (onText) onText(text)
-      return { text, source: provider || 'server' }
+      return { text, source: lastProvider || provider || 'server' }
     } catch (e) {
       if (signal && signal.aborted) throw e
       // 伺服器用唔到：改為只排好長者原話，唔會令遊戲卡住

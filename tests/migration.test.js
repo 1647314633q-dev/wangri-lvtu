@@ -88,6 +88,8 @@ test('Gemini 出錯（例如拒絕香港連線）：自動轉用免費 Workers A
   try {
     const AI = { run: async () => ({ response: '我後生喺工廠做嘢。' }) }
     const r = await worker.fetch(req('/api/ai', { prompt: '記憶' }), { ...env, AI_ENABLED: 'true', GEMINI_API_KEY: 'k', AI })
-    assert.equal((await r.json()).text, '我後生喺工廠做嘢。')
+    const d = await r.json()
+    assert.equal(d.text, '我後生喺工廠做嘢。')
+    assert.equal(d.provider, 'workers-ai', '回報實際用咗 Workers AI，故事頁唔會錯寫 Gemini')
   } finally { globalThis.fetch = original }
 })
