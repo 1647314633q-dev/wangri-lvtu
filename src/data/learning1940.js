@@ -142,7 +142,7 @@ export const ROUTE_QUESTION = {
   ],
 }
 
-const HINT = '點左邊一張相，再點右邊同名嘅字'
+const HINT = '點左邊一個詞語，再點右邊一樣嘅詞語'
 
 const typeItem = t => ({ id: 'type-' + t.id, name: t.short || t.name, image: t.image, placeholder: t.placeholder, credit: t.credit, intro: t.intro, question: t.question })
 

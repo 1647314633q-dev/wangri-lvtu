@@ -6,11 +6,16 @@ function shuffle(arr) {
   return a
 }
 
-// 圖片名稱配對：左邊係物件圖片同名稱，右邊係打亂次序嘅相同名稱文字。
-// 點一邊，再點另一邊同名嗰張，就會連線然後消失。
+// 同名詞語配對：左右兩邊都係詞語（唔顯示相片；相片喺配對成功後嘅回憶卡先出現）。
+// 每次打開，兩邊次序都會重新打亂。點一邊，再點另一邊同名嗰張，就會連線然後消失。
 export default function PairMatch({ round, items, cleared, onMatched, onSkip, disabled }) {
-  const left = items
-  const right = useMemo(() => shuffle(items), [round.id]) // eslint-disable-line react-hooks/exhaustive-deps
+  // 每次打開（每回合）兩邊都重新打亂；右邊唔會同左邊一模一樣次序
+  const [left, right] = useMemo(() => {
+    const l = shuffle(items)
+    let r = shuffle(items)
+    for (let i = 0; i < 5 && items.length > 1 && r.every((x, k) => x.id === l[k].id); i++) r = shuffle(items)
+    return [l, r]
+  }, [round.id]) // eslint-disable-line react-hooks/exhaustive-deps
   const [sel, setSel] = useState(null)      // { side, id }
   const [bad, setBad] = useState([])
   const [linking, setLinking] = useState(null)
@@ -25,7 +30,7 @@ export default function PairMatch({ round, items, cleared, onMatched, onSkip, di
     if (!sel || sel.side === side) {
       if (sel && sel.side === side && sel.id === it.id) { setSel(null); setMsg(round.hint); return }
       setSel({ side, id: it.id })
-      setMsg(side === 'L' ? '而家喺右邊點「' + it.name + '」' : '而家喺左邊點返對應嘅相')
+      setMsg(side === 'L' ? '而家喺右邊點「' + it.name + '」' : '而家喺左邊點返「' + it.name + '」')
       return
     }
     const a = sel; setSel(null)
@@ -47,7 +52,7 @@ export default function PairMatch({ round, items, cleared, onMatched, onSkip, di
   const cls = (side, it) => {
     const k = side + it.id
     const gone = cleared.includes(it.id) && !(linking && linking.id === it.id)
-    return ['ptile', side === 'L' ? 'pic' : 'word', sel && sel.side === side && sel.id === it.id ? 'sel' : '', bad.includes(k) ? 'bad' : '', linking && linking.id === it.id ? 'linked' : '', gone ? 'gone' : ''].join(' ')
+    return ['ptile', 'word', side === 'L' ? 'left' : 'right', sel && sel.side === side && sel.id === it.id ? 'sel' : '', bad.includes(k) ? 'bad' : '', linking && linking.id === it.id ? 'linked' : '', gone ? 'gone' : ''].join(' ')
   }
 
   return (
@@ -58,16 +63,14 @@ export default function PairMatch({ round, items, cleared, onMatched, onSkip, di
       </div>
       <div className="pairboard" ref={boardRef}>
         <div className="pcol">
-          <p className="pcol-h">相</p>
           {left.map(it => (
             <button key={'L' + it.id} ref={el => { refs.current['L' + it.id] = el }} type="button" className={cls('L', it)}
               onClick={() => click('L', it)} disabled={cleared.includes(it.id)} aria-pressed={!!(sel && sel.side === 'L' && sel.id === it.id)}>
-              <img src={it.image} alt="" /><span>{it.name}</span>
+              <span>{it.name}</span>
             </button>
           ))}
         </div>
         <div className="pcol">
-          <p className="pcol-h">字</p>
           {right.map(it => (
             <button key={'R' + it.id} ref={el => { refs.current['R' + it.id] = el }} type="button" className={cls('R', it)}
               onClick={() => click('R', it)} disabled={cleared.includes(it.id)} aria-pressed={!!(sel && sel.side === 'R' && sel.id === it.id)}>

@@ -6,7 +6,7 @@ import { planChildhood, planLearning, planSociety, planShared, material, keyOf, 
 import { img } from '../lib/img.js'
 
 export const ORDER = ['childhood', 'learning', 'society', 'events', 'later']
-const HINT = '點左邊一張相，再點右邊同名嘅字'
+const HINT = '點左邊一個詞語，再點右邊一樣嘅詞語'
 const DEFAULT_NO_EXP = '唔緊要，我哋可以揀另一件物件，或者講你想講嘅經歷。'
 const CLASSIC = new Set(['childhood', 'learning'])   // 第一、二章：原有三個按鈕
 

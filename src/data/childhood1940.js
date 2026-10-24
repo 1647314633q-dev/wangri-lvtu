@@ -4,7 +4,7 @@
 import { pic } from '../lib/img.js'
 // 換圖：將相片放入 src/assets/images/childhood/，用同一個檔名（例如 marbles.jpg）就會自動取代示意插畫（見 src/lib/img.js）。
 
-const HINT = '點左邊一張相，再點右邊同名嘅字'
+const HINT = '點左邊一個詞語，再點右邊一樣嘅詞語'
 
 export const CHAPTER = {
   id: 'childhood',
