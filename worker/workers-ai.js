@@ -15,7 +15,7 @@ export async function callWorkersAI({ prompt, json = false, ai, model }) {
   if (!prompt || typeof prompt !== 'string' || prompt.length > 20000) throw new Error('bad prompt')
   const models = [...new Set([model, ...FALLBACK].filter(Boolean))]
   const messages = [
-    { role: 'system', content: '你係香港長者回憶遊戲嘅助手。用繁體中文同香港廣東話口語回答。' + (json ? '只回覆 JSON，唔好加其他文字。' : '') },
+    { role: 'system', content: '你係香港長者回憶遊戲嘅助手。只用繁體中文同香港廣東話口語回答，唔好夾雜任何英文字。' + (json ? '只回覆 JSON，唔好加其他文字。' : '') },
     { role: 'user', content: prompt },
   ]
   let last

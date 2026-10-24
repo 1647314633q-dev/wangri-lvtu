@@ -20,12 +20,9 @@ export function ReadAloud({ text }) {
   )
 }
 
+const AI_NOTE = '由 AI根據你分享嘅內容整理。請核對內容，確認係你嘅真實經歷。'
 const SOURCE = {
-  claude: '由 AI（Claude）根據你分享嘅內容整理。請核對內容，確認係你嘅真實經歷。',
-  server: '由 AI 根據你分享嘅內容整理。請核對內容，確認係你嘅真實經歷。',
-  gemini: '由 AI（Gemini）根據你分享嘅內容整理。請核對內容，確認係你嘅真實經歷。',
-  'workers-ai': '由 AI（Cloudflare Workers AI）根據你分享嘅內容整理。請核對內容，確認係你嘅真實經歷。',
-  deepseek: '由 AI（DeepSeek）根據你分享嘅內容整理。請核對內容，確認係你嘅真實經歷。',
+  claude: AI_NOTE, server: AI_NOTE, gemini: AI_NOTE, deepseek: AI_NOTE, 'workers-ai': AI_NOTE,
   local: '未連接 AI：呢度先將你講過嘅說話按次序排好。你可以自己修改。',
 }
 
