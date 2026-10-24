@@ -81,3 +81,13 @@ test('冇金鑰但有 Workers AI：用免費 Workers AI，第一個型號出錯�
   assert.equal(runs.length, 2)
   assert.equal((await (await worker.fetch(req('/api/status'), { ...e3, DEEPSEEK_API_KEY: 'k' })).json()).ai, 'deepseek', '有 DeepSeek 金鑰就優先用')
 })
+
+test('Gemini 出錯（例如拒絕香港連線）：自動轉用免費 Workers AI', async () => {
+  const original = globalThis.fetch
+  globalThis.fetch = async () => new Response(JSON.stringify({ error: { message: 'User location is not supported for the API use.' } }), { status: 400 })
+  try {
+    const AI = { run: async () => ({ response: '我後生喺工廠做嘢。' }) }
+    const r = await worker.fetch(req('/api/ai', { prompt: '記憶' }), { ...env, AI_ENABLED: 'true', GEMINI_API_KEY: 'k', AI })
+    assert.equal((await r.json()).text, '我後生喺工廠做嘢。')
+  } finally { globalThis.fetch = original }
+})

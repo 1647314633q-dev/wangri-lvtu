@@ -44,12 +44,16 @@ export default {
       if (!input || typeof input.prompt !== 'string' || !input.prompt.trim() || input.prompt.length > 20000) return json({ error: 'Invalid prompt' }, 400)
       try {
         const args = { prompt: input.prompt, json: !!input.json }
-        const text = provider === 'deepseek'
-          ? await callDeepSeek({ ...args, apiKey: env.DEEPSEEK_API_KEY, model: env.DEEPSEEK_MODEL })
-          : provider === 'workers-ai'
-            ? await callWorkersAI({ ...args, ai: env.AI, model: env.WORKERS_AI_MODEL })
-            : await callGemini({ ...args, apiKey: env.GEMINI_API_KEY, model: env.GEMINI_MODEL })
-        return json({ text })
+        const call = p => p === 'deepseek' ? callDeepSeek({ ...args, apiKey: env.DEEPSEEK_API_KEY, model: env.DEEPSEEK_MODEL })
+          : p === 'workers-ai' ? callWorkersAI({ ...args, ai: env.AI, model: env.WORKERS_AI_MODEL })
+          : callGemini({ ...args, apiKey: env.GEMINI_API_KEY, model: env.GEMINI_MODEL })
+        try {
+          return json({ text: await call(provider) })
+        } catch (e) {
+          // 付費／外部 AI 出錯（例如 Gemini 拒絕香港連線）：轉用免費 Workers AI
+          if (provider !== 'workers-ai' && env.AI) return json({ text: await call('workers-ai') })
+          throw e
+        }
       } catch {
         return json({ error: 'AI 暫時未能使用，請使用原話整理。' }, 502)
       }
