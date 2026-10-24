@@ -51,6 +51,7 @@ export default {
           return json({ text: await call(provider), provider })
         } catch (e) {
           // 付費／外部 AI 出錯（例如 Gemini 拒絕香港連線）：轉用免費 Workers AI
+          console.warn('[AI 轉用 Workers AI] ' + provider + ' 出錯：' + String(e && e.message || e).slice(0, 300))
           if (provider !== 'workers-ai' && env.AI) return json({ text: await call('workers-ai'), provider: 'workers-ai', fallbackFrom: provider })
           throw e
         }
